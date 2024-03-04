@@ -1,3 +1,4 @@
+from fastapi_cache.backends.redis import RedisBackend
 from fastapi import FastAPI
 from api.users.router import router as user_router
 from api.friends.router import router as friend_router
@@ -22,3 +23,8 @@ app.add_middleware(
     allow_headers=["Content-Type", "Set-Cookie", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin",
                    "Authorization"]
 )
+
+
+# alembic upgrade head
+# pip install asyncpg
+# uvicorn  api.main:app

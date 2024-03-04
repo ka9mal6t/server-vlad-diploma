@@ -17,5 +17,12 @@ class UsersDAO(BaseDAO):
                     count_changes=count_changes+1)
                 await session.execute(query)
 
+    @classmethod
+    async def confirm_email(cls, user_id):
+        async with async_session_maker() as session:
+            async with session.begin():
+                query = update(cls.model).where(cls.model.id == user_id).values(confirm=True)
+                await session.execute(query)
+
 
 

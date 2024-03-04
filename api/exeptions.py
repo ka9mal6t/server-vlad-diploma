@@ -50,5 +50,9 @@ AttemptsIsLimitedException = HTTPException(
     detail="Attempts is limited"
 )
 
+IncorrectCodeException = HTTPException(
+    status_code=status.HTTP_404_NOT_FOUND,
+    detail="Code not found"
+)
 
 

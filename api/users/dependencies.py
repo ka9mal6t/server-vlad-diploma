@@ -1,3 +1,5 @@
+import random
+import string
 from datetime import datetime
 
 from fastapi import Request, Depends
@@ -32,4 +34,13 @@ async def get_current_user(token: str = Depends(get_token)):
         raise UserIsNotExistException
     return user
 
+
+async def create_unique_code(length=100) -> str:
+    while True:
+        characters = string.ascii_letters + string.digits
+        random_string = ''.join(random.choice(characters) for _ in range(length))
+        user = await UsersDAO.find_one_or_none(email_code=random_string)
+        if user is None:
+            break
+    return random_string
 
