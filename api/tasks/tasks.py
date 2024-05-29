@@ -3,10 +3,8 @@ from pydantic import EmailStr
 import smtplib
 
 from api.config import SMTP_USER, SMTP_HOST, SMTP_PORT, SMTP_PASS
-from api.tasks.celery_conf import celery
 from api.tasks.email_templates import create_comfirmation_template
 
-@celery.task
 def send_comfirmation_email(
         code: str,
         email_to: EmailStr

@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import APIRouter, Response, Depends
+from fastapi import APIRouter, Response, Depends, BackgroundTasks
 from api.exeptions import UserAlreadyExistException, IncorrectEmailOrPasswordException, AttemptsIsLimitedException, \
     IncorrectCodeException
 from api.users.auth import get_password_hash, authenticate_user, create_access_token, generate_new_code
@@ -17,7 +17,8 @@ router = APIRouter(
 
 
 @router.post("/register")
-async def register_user(user_data: SUserRegister):
+async def register_user(background_tasks: BackgroundTasks,
+                        user_data: SUserRegister):
     existing_user_username = await UsersDAO.find_one_or_none(username=user_data.username)
     existing_user_email = await UsersDAO.find_one_or_none(email=user_data.email)
     if existing_user_email or existing_user_username:
@@ -30,7 +31,9 @@ async def register_user(user_data: SUserRegister):
                        hash_pass=hash_password,
                        code=code,
                        email_code=email_code)
-    send_comfirmation_email.delay(email_code, user_data.email)
+    background_tasks.add_task(send_comfirmation_email,
+                              code=email_code,
+                              email_to=user_data.email)
 
 
 @router.post("/login")
