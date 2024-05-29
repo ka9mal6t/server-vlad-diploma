@@ -33,7 +33,6 @@ async def register_user(user_data: SUserRegister):
     send_comfirmation_email.delay(email_code, user_data.email)
 
 
-
 @router.post("/login")
 async def login_user(response: Response, user_data: SUserLogin):
     user = await authenticate_user(user_data.username, user_data.password)
@@ -69,3 +68,6 @@ async def confirm_email(code: str) -> Optional[str]:
             await UsersDAO.confirm_email(user.id)
             return user.email
     raise IncorrectCodeException
+
+
+

@@ -17,7 +17,7 @@ def create_comfirmation_template(
     email.set_content(
         f"""
         <h1>Підтвердіть свою пошту<h1>
-        <a href="http://127.0.0.1:8000/auth/confirm_email/{code}" 
+        <a href="https://stego-api.onrender.com//auth/confirm_email/{code}" 
         style="display: inline-block; padding: 10px 20px; 
         background-color: #007bff; color: #fff; 
         text-decoration: none; border-radius: 5px;">Підтвердити</a>
