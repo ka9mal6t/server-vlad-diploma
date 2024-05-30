@@ -5,6 +5,7 @@ from api.users.dao import UsersDAO
 from api.users.dependencies import get_current_user
 from api.users.models import Users
 from api.users.schemas import SFriendUserInfo, SMyFriendUserInfo
+from api.users.utils import decrypt_code
 
 router = APIRouter(
     prefix="/friends",
@@ -19,7 +20,9 @@ async def get_friends(current_user: Users = Depends(get_current_user)) -> list[S
         return friends
     users_friends = []
     for friend in friends:
-        users_friends.append(await UsersDAO.find_one_or_none(id=friend.owner_id))
+        friend_info = await UsersDAO.find_one_or_none(id=friend.owner_id)
+        friend_info.code = decrypt_code(friend_info.code)
+        users_friends.append(friend_info)
     return users_friends
 
 

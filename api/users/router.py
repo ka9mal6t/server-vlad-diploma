@@ -9,6 +9,7 @@ from api.users.dependencies import get_current_user, create_unique_code
 from api.users.models import Users
 from api.users.schemas import SUserInfo, SUserRegister, SUserLogin
 from api.tasks.tasks import send_comfirmation_email
+from api.users.utils import encrypt_code, decrypt_code
 
 router = APIRouter(
     prefix="/auth",
@@ -24,7 +25,7 @@ async def register_user(background_tasks: BackgroundTasks,
     if existing_user_email or existing_user_username:
         raise UserAlreadyExistException
     hash_password = get_password_hash(user_data.username, user_data.password)
-    code = generate_new_code()
+    code = encrypt_code(generate_new_code())
     email_code = await create_unique_code()
     await UsersDAO.add(username=user_data.username,
                        email=user_data.email,
@@ -53,6 +54,7 @@ async def logout_user(response: Response):
 
 @router.get("/info")
 async def info_user(current_user: Users = Depends(get_current_user)) -> SUserInfo:
+    current_user.code = decrypt_code(current_user.code)
     return current_user
 
 
@@ -60,7 +62,7 @@ async def info_user(current_user: Users = Depends(get_current_user)) -> SUserInf
 async def change_code(current_user: Users = Depends(get_current_user)):
     if current_user.count_changes > 2:
         raise AttemptsIsLimitedException
-    await UsersDAO.update_code(current_user.id, current_user.count_changes, generate_new_code())
+    await UsersDAO.update_code(current_user.id, current_user.count_changes, encrypt_code(generate_new_code()))
 
 
 @router.get("/confirm_email/{code}")
