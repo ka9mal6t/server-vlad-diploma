@@ -6,6 +6,12 @@ from starlette.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+
+@app.get("/")
+def health():
+    return {"status": "ok"}
+
+
 app.include_router(user_router)
 app.include_router(friend_router)
 
@@ -27,4 +33,5 @@ app.add_middleware(
 
 # alembic upgrade head
 # pip install asyncpg
+
 # uvicorn  api.main:app
