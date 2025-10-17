@@ -1,6 +1,6 @@
 import os
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, DeclarativeBase   
 from sqlalchemy.pool import NullPool
 
 from api.config import DATABASE_URL
@@ -25,6 +25,7 @@ async_session_maker = sessionmaker(bind=engine, class_=AsyncSession, expire_on_c
 
 class Base(DeclarativeBase):
     pass
+
 
 
 
