@@ -3,7 +3,8 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+from api.config import DATABASE_URL
+
 
 # нормализуем префикс и добавляем sslmode=require (если нужно)
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
@@ -24,6 +25,7 @@ async_session_maker = sessionmaker(bind=engine, class_=AsyncSession, expire_on_c
 
 class Base(DeclarativeBase):
     pass
+
 
 
 
