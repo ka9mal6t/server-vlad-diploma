@@ -13,10 +13,15 @@ if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 engine = create_async_engine(
-    DATABASE_URL,
-    connect_args={"ssl": ssl_ctx},  # <— включаем TLS здесь
+    DATABASE_URL,                      # БЕЗ ?sslmode=...
+    connect_args={
+        "ssl": ssl_ctx,                # TLS
+        "statement_cache_size": 0,     # ключевой фикс для PgBouncer
+        # "timeout": 30.0,             # (опц.) таймаут на установку соединения
+    },
     pool_pre_ping=True,
-    poolclass=NullPool,             # на Render это стабильно
+    poolclass=NullPool,                # на Render самое стабильное
+    # echo=True,
 )
 
 async_session_maker = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
@@ -24,6 +29,7 @@ async_session_maker = sessionmaker(bind=engine, class_=AsyncSession, expire_on_c
 
 class Base(DeclarativeBase):
     pass
+
 
 
 
