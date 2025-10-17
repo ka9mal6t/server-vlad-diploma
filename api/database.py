@@ -12,7 +12,7 @@ ssl_context.check_hostname = False
 ssl_context.verify_mode = ssl.CERT_NONE
 
 engine = create_async_engine(
-    DB_URL,
+    DATABASE_URL,
     connect_args={"ssl": ssl_context},
 )
 
@@ -24,5 +24,6 @@ async_session_maker = sessionmaker(
 
 class Base(DeclarativeBase):
     pass
+
 
 
